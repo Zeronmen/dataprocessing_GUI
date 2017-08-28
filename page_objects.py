@@ -197,7 +197,7 @@ class Processing_Window:
 	     self.loc.set("Graph 1")
 	
 	def locupdate_graph2(self,event):
-	     self.loc_set("Graph 2")
+	     self.loc.set("Graph 2")
 
 	def infoupdate_graph(self,event):
 	     self.info.set("graphs selected data on %s" % self.loc.get())
