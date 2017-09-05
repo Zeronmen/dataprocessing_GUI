@@ -61,13 +61,14 @@ def process (datax, datay):
         input: datax, datay
         return: (voc,isc,FF,RR) OR string contaning error message 
     """
+    Vstep = datax[0]-datax[1]
     if datax[0] == 0:
         return 'NO DATA'
     else:    
         powerdata = datax*np.absolute(datay)
         neg = datay<0
         startq4 = int(np.size(datay) - np.size(datay[neg])) # First index into the 4th Quad
-        endq4 = int(datax[0]/0.025) # Index for Indi = 0.
+        endq4 = int(datax[0]/Vstep) # Index for Indi = 0.
         
         if startq4 - endq4 == 1:
             return 0,0,0,0
