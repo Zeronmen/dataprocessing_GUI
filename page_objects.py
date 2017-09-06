@@ -90,19 +90,19 @@ class Processing_Window:
 
 		process_frame = Frame(main_frame,bd=2, relief=SUNKEN)
 		process_frame.grid(column=1,row=1,pady=5,padx=5,sticky=N+S+E+W)
-		process_batchnumber = IntVar()
-		process_batchsize = IntVar()
+		self.process_batchnumber = IntVar()
+		self.process_batchsize = IntVar()
 		
 		l = Label(process_frame, text="Batchnumber")
 		l.grid(column=0,row=0, padx=2, pady=2,sticky=W)
-		e = Entry(process_frame,textvariable=process_batchnumber)
+		e = Entry(process_frame,textvariable=self.process_batchnumber)
 		e.grid(column=1,row=0, padx=2, pady=2)
 		l = Label(process_frame,text="Batchsize")
 		l.grid(column=0,row=1, padx=2, pady=2,sticky=W)
-		e = Entry(process_frame,textvariable=process_batchsize)
+		e = Entry(process_frame,textvariable=self.process_batchsize)
 		e.grid(column=1,row=1, padx=2, pady=2)
 		b = Button(process_frame,text="Run",width=10,
-                    command=pd.process_batch(process_batchnumber.get(),process_batchsize.get() ))
+                    command=self.run_process_batch)
 		b.bind("<Enter>",self.infoupdate_runprocess)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.grid(column=1, row=2, padx=2, pady=2,sticky=W)
@@ -258,6 +258,8 @@ class Processing_Window:
 
 	def infoupdate_reset(self,event):
 	     self.info.set("holder")
+	def run_process_batch(self):
+	     pd.process_batch(self.process_batchnumber.get(),self.process_batchsize.get())
 
 
 
