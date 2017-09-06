@@ -181,6 +181,10 @@ class Processing_Window:
 		b.bind("<Enter>",self.infoupdate_graph)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.pack(side=LEFT,pady=2,padx=2)
+		b = Button(graph1_control,text="Previous")
+		b.pack(side=LEFT,pady=2,padx=2)
+		b.bind("<Enter>",self.infoupdate_previous)
+		b.bind("<Leave>",self.infoupdate_reset)
 		b = Button(graph1_control,text="Next")
 		b.pack(side=LEFT,pady=2,padx=2)
 		b.bind("<Enter>",self.infoupdate_next)
@@ -214,6 +218,10 @@ class Processing_Window:
 		b.bind("<Enter>",self.infoupdate_graph)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.pack(side=LEFT,pady=2,padx=2)
+		b = Button(graph2_control,text="Previous")
+		b.pack(side=LEFT,pady=2,padx=2)
+		b.bind("<Enter>",self.infoupdate_previous)
+		b.bind("<Leave>",self.infoupdate_reset)
 		b = Button(graph2_control,text="Next")
 		b.pack(side=LEFT,pady=2,padx=2)
 		b.bind("<Enter>",self.infoupdate_next)
@@ -239,6 +247,9 @@ class Processing_Window:
 	def infoupdate_graph(self,event):
 	     self.info.set("graphs selected data on %s" % self.loc.get())
 
+	def infoupdate_previous(self,event):
+            self.info.set("scrolls to the previous device on %s" % self.loc.get())
+    
 	def infoupdate_next(self,event):
             self.info.set("scrolls to next device on %s" % self.loc.get())
 
