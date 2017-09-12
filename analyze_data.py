@@ -1,8 +1,10 @@
 # These are the files that need to be imported. 
 
-# import numpy as np
-# import csv
-# from matplotlib import pyplot as plt
+import numpy as np
+import csv
+from matplotlib import pyplot as plt
+import process_data as pd
+import os.path as path
 
 # Creates data for a RR vs. Voltage graph. not useful.
 def RecCur(batchnumber,device,pixel):
@@ -11,7 +13,7 @@ def RecCur(batchnumber,device,pixel):
         input: batchnumber, devicenumber, pixel
         return: Vdata,RRdata
     """
-    data = access(batchnumber,device,pixel)
+    data = pd.access(batchnumber,device,pixel)
     datai = data[1][0 : int(data[0][0]/0.025)]
     dataiin = data[1][::-1][0 : int(data[0][0]/0.025)]
     
