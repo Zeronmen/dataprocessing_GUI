@@ -162,10 +162,12 @@ class Processing_Window:
 		graph1_frame.grid(column=0, row=0, pady=5,sticky=N+S+W+E)
 		self.graph1_batchnumber = IntVar()
 		self.graph1_devicenumber = IntVar()
+		self.graph1_pixelnumber = IntVar()
+		self.graph1_pixelnumber.set(1)
+
 
 		graph1_fig = Figure(figsize=(1055/100,450/100),dpi=100)
-		self.graph1_plot1 = graph1_fig.add_subplot(1,2,1)
-		self.graph1_plot2 = graph1_fig.add_subplot(1,2,2)
+		self.graph1_plot1 = graph1_fig.add_subplot(1,1,1)
 
 		self.graph1_canvas = FigureCanvasTkAgg(graph1_fig, graph1_frame)
 		self.graph1_canvas.show()
@@ -200,11 +202,12 @@ class Processing_Window:
 		graph2_frame.bind("<Enter>",self.locupdate_graph2)
 		graph2_frame.grid(column=0,row=1,pady=5,sticky=N+S+E+W)
 		self.graph2_batchnumber = IntVar()
-		self.graph1_devicenumber = IntVar()
+		self.graph2_devicenumber = IntVar()
+		self.graph2_pixelnumber = IntVar()
+		self.graph2_pixelnumber.set(1)
 
 		graph2_fig = Figure(figsize=(1055/100,450/100),dpi=100)
-		self.graph2_plot1 = graph2_fig.add_subplot(1,2,1)
-		self.graph2_plot2 = graph2_fig.add_subplot(1,2,2)
+		self.graph2_plot1 = graph2_fig.add_subplot(1,1,1)
 
 		self.graph2_canvas = FigureCanvasTkAgg(graph2_fig, graph2_frame)
 		self.graph2_canvas.show()
@@ -285,7 +288,46 @@ class Processing_Window:
 	def recur_previous(self):
             hold = ((self.recur_pixelnumber.get() - 1) % 5)
             if hold == 0:
-                hold = 4
+            	hold = 4
             self.recur_pixelnumber.set(hold)
-            self.run_RecCur()
+            self.run_RecCur() 
 
+	def run_graph1(self):
+            data = ad.IVdata(self.graph1_batchnumber.get(),self.graph1_devicenumber.get(),self.graph1_pixelnumber.get())
+            self.graph1_plot1.cla()
+            self.graph1_plot1.plot(data[0],data[1])
+            self.graph1_canvas.show()
+
+	def graph1_next(self):
+            hold = ((self.graph1_pixelnumber.get()+1)%5)
+            if hold == 0:
+                hold =1
+            self.graph1_pixelnumber.set(hold)
+            self.run_graph1()
+
+	def graph1_next(self):
+            hold = ((self.graph1_pixelnumber.get()-1)%5)
+            if hold == 0:
+                hold =4
+            self.graph1_pixelnumber.set(hold)
+            self.run_graph1()
+
+	def run_graph2(self):
+            data = ad.IVdata(self.graph2_batchnumber.get(),self.graph2_devicenumber.get(),self.graph2_pixelnumber.get())
+            self.graph2_plot1.cla()
+            self.graph2_plot1.plot(data[0],data[1])
+            self.graph2_canvas.show()
+
+	def graph2_next(self):
+			hold = ((self.graph2_pixelnumber.get()+1)%5)
+			if hold == 0:
+				hold =1
+			self.graph2_pixelnumber.set(hold)
+			self.run_graph2()
+
+	def graph2_next(self):
+            hold = ((self.graph2_pixelnumber.get()-1)%5)
+            if hold == 0:
+                hold =4
+            self.graph2_pixelnumber.set(hold)
+            self.run_graph2()

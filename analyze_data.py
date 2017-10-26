@@ -23,6 +23,17 @@ def RecCur(batchnumber,device,pixel):
 
 # Has method for correctly setting the x and y limits for the whole plots but currently the 4th quad plots
 # may need to be adjusted depending on the data. and plot may need further formating to look nice.
+def IVdata(batchnumber, device, pixel):
+    """
+        Creates a plot of Voltage vs Current for a single device and pixel
+        input: batchnumber, devicenumber, pixel
+        return: Vdata, Idata
+    """
+    data.pd.access(batchnumber,deive,pixel)
+    Idata = data[1]
+    Vdata = data[0]
+    return Vdata,Idata
+
 def makeplots(batchnumber,firstdevice):
     """
         Creates plots of data.
