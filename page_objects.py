@@ -90,92 +90,94 @@ class Processing_Window:
 
 		process_frame = Frame(main_frame,bd=2, relief=SUNKEN)
 		process_frame.grid(column=1,row=1,pady=5,padx=5,sticky=N+S+E+W)
-		process_batchnumber = IntVar()
-		process_batchsize = IntVar()
+		self.process_batchnumber = IntVar()
+		self.process_batchsize = IntVar()
 		
 		l = Label(process_frame, text="Batchnumber")
 		l.grid(column=0,row=0, padx=2, pady=2,sticky=W)
-		e = Entry(process_frame,textvariable=process_batchnumber)
+		e = Entry(process_frame,textvariable=self.process_batchnumber)
 		e.grid(column=1,row=0, padx=2, pady=2)
 		l = Label(process_frame,text="Batchsize")
 		l.grid(column=0,row=1, padx=2, pady=2,sticky=W)
-		e = Entry(process_frame,textvariable=process_batchsize)
+		e = Entry(process_frame,textvariable=self.process_batchsize)
 		e.grid(column=1,row=1, padx=2, pady=2)
 		b = Button(process_frame,text="Run",width=10,
-                    command=pd.process_batch(process_batchnumber.get(),process_batchsize.get() ))
+                    command=self.run_process_batch)
 		b.bind("<Enter>",self.infoupdate_runprocess)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.grid(column=1, row=2, padx=2, pady=2,sticky=W)
 
 		recur_frame = Frame(main_frame,bd=2)
+		recur_frame.bind("<Enter>",self.locupdate_recur)
 		recur_frame.grid(column=1,row=0,pady=5,padx=5,sticky=N+S+E+W)
 
 		recur_fig = Figure(figsize=(490/100,450/100),dpi=100)
-		recur_plot = recur_fig.add_subplot(1,1,1)
+		self.recur_plot = recur_fig.add_subplot(1,1,1)
 
-		recur_canvas = FigureCanvasTkAgg(recur_fig, recur_frame)
-		recur_canvas.show()
-		recur_canvas.get_tk_widget().pack(side=TOP,fill=X)
-		recur_canvas._tkcanvas.pack(side=TOP,fill=X)	
+		self.recur_canvas = FigureCanvasTkAgg(recur_fig, recur_frame)
+		self.recur_canvas.show()
+		self.recur_canvas.get_tk_widget().pack(side=TOP,fill=X)
+		self.recur_canvas._tkcanvas.pack(side=TOP,fill=X)
 
 		
 		recur_control = Frame(recur_frame,bd=2,relief=SUNKEN)
 		recur_control.pack(side=TOP,fill=X)
-		recur_control.columnconfigure(0,weight=25)
-		recur_control.columnconfigure(1,weight=25)
-		recur_control.columnconfigure(2,weight=25)
-		recur_control.columnconfigure(3,weight=25)
-		recur_batchnumber = IntVar()
-		recur_devicenumber = IntVar()
-		recur_pixelnumber = IntVar()
+		self.recur_batchnumber = IntVar()
+		self.recur_devicenumber = IntVar()
+		self.recur_pixelnumber = IntVar()
+		self.recur_pixelnumber.set(1)
+		
 
 		l = Label(recur_control,text="Batchnumber")
 		l.grid(column=0,row=0,sticky=W,pady=1)
 		l = Label(recur_control,text="Devicenumber")
 		l.grid(column=1,row=0,sticky=W,pady=1)
-		l = Label(recur_control,text="Pixelnumber")
-		l.grid(column=2,row=0,sticky=W,pady=1)
-		
 
 		entry_single = Frame(recur_control)
-		e = Entry(entry_single,width=10,textvariable=recur_batchnumber)
+		e = Entry(entry_single,width=10,textvariable=self.recur_batchnumber)
 		e.pack()
 		entry_single.grid(column=0,row=1,padx=1,stick=W)
 		entry_single = Frame(recur_control)
-		e = Entry(entry_single,width=10,textvariable=recur_devicenumber)
+		e = Entry(entry_single,width=10,textvariable=self.recur_devicenumber)
 		e.pack()
 		entry_single.grid(column=1,row=1,padx=1,stick=W)
-		entry_single = Frame(recur_control)
-		e = Entry(entry_single,width=10,textvariable=recur_pixelnumber)
-		e.pack()
-		entry_single.grid(column=2,row=1,padx=1,stick=W)
 
 
-		b =Button(recur_control, text="Graph",width=5,command=ad.RecCur)
+		b = Button(recur_control, text="Graph",width=5,command=self.run_RecCur)
 		b.bind("<Enter>",self.infoupdate_recurgraph)
 		b.bind("<Leave>",self.infoupdate_reset)
+		b.grid(column=2,row=0,rowspan=2,pady=1,padx=1)
+		b = Button(recur_control,text="Previous",width=5,command=self.recur_previous)
+		b.bind("<Enter>",self.infoupdate_previous)
+		b.bind("<Leave>",self.infoupdate_reset)
 		b.grid(column=3,row=0,rowspan=2,pady=1,padx=1)
+		b = Button(recur_control,text="Next",width=5,command=self.recur_next)
+		b.bind("<Enter>",self.infoupdate_next)
+		b.bind("<Leave>",self.infoupdate_reset)
+		b.grid(column=4,row=0,rowspan=2,pady=1,padx=1)
 		
 
 		graph1_frame = Frame(main_frame,bd=2)
 		graph1_frame.bind("<Enter>",self.locupdate_graph1)
 		graph1_frame.grid(column=0, row=0, pady=5,sticky=N+S+W+E)
-		graph1_batchnumber = IntVar()
+		self.graph1_batchnumber = IntVar()
+		self.graph1_devicenumber = IntVar()
 
 		graph1_fig = Figure(figsize=(1055/100,450/100),dpi=100)
-		graph1_plot = graph1_fig.add_subplot(1,1,1)
+		self.graph1_plot1 = graph1_fig.add_subplot(1,2,1)
+		self.graph1_plot2 = graph1_fig.add_subplot(1,2,2)
 
-		graph1_canvas = FigureCanvasTkAgg(graph1_fig, graph1_frame)
-		graph1_canvas.show()
-		graph1_canvas.get_tk_widget().pack(side=TOP,fill=BOTH)
-		graph1_canvas._tkcanvas.pack(side=TOP,fill=BOTH)
+		self.graph1_canvas = FigureCanvasTkAgg(graph1_fig, graph1_frame)
+		self.graph1_canvas.show()
+		self.graph1_canvas.get_tk_widget().pack(side=TOP,fill=BOTH)
+		self.graph1_canvas._tkcanvas.pack(side=TOP,fill=BOTH)
 
 		graph1_control = Frame(graph1_frame,bd=2,relief=SUNKEN)
 		graph1_control.pack(side=LEFT)
 
 		l = Label(graph1_control,text="Batchnumber")
 		l.pack(side=LEFT,pady=2,padx=2)
-		e = Entry(graph1_control,width=10,textvariable=graph1_batchnumber)
+		e = Entry(graph1_control,width=10,textvariable=self.graph1_batchnumber)
 		e.pack(side=LEFT,pady=2,padx=2)
 		b = Button(graph1_control, text="Graph")
 		b.bind("<Enter>",self.infoupdate_graph)
@@ -197,22 +199,24 @@ class Processing_Window:
 		graph2_frame = Frame(main_frame,bd=2)		
 		graph2_frame.bind("<Enter>",self.locupdate_graph2)
 		graph2_frame.grid(column=0,row=1,pady=5,sticky=N+S+E+W)
-		graph2_batchnumber = IntVar()
+		self.graph2_batchnumber = IntVar()
+		self.graph1_devicenumber = IntVar()
 
 		graph2_fig = Figure(figsize=(1055/100,450/100),dpi=100)
-		graph2_plot = graph2_fig.add_subplot(1,1,1)
+		self.graph2_plot1 = graph2_fig.add_subplot(1,2,1)
+		self.graph2_plot2 = graph2_fig.add_subplot(1,2,2)
 
-		graph2_canvas = FigureCanvasTkAgg(graph2_fig, graph2_frame)
-		graph2_canvas.show()
-		graph2_canvas.get_tk_widget().pack(side=TOP,fill=BOTH)
-		graph2_canvas._tkcanvas.pack(side=TOP,fill=X)
+		self.graph2_canvas = FigureCanvasTkAgg(graph2_fig, graph2_frame)
+		self.graph2_canvas.show()
+		self.graph2_canvas.get_tk_widget().pack(side=TOP,fill=BOTH)
+		self.graph2_canvas._tkcanvas.pack(side=TOP,fill=X)
 
 		graph2_control = Frame(graph2_frame,bd=2,relief=SUNKEN)
 		graph2_control.pack(side=LEFT)
 
 		l = Label(graph2_control,text="Batchnumber")
 		l.pack(side=LEFT,pady=2,padx=2)
-		e = Entry(graph2_control,width=10,textvariable=graph2_batchnumber)
+		e = Entry(graph2_control,width=10,textvariable=self.graph2_batchnumber)
 		e.pack(side=LEFT,pady=2,padx=2)
 		b = Button(graph2_control, text="Graph")
 		b.bind("<Enter>",self.infoupdate_graph)
@@ -238,6 +242,9 @@ class Processing_Window:
 	def infoupdate_runprocess(self,event):
 	     self.info.set("Processes selected batch")
 
+	def locupdate_recur(self,event):
+            self.loc.set("the Rectification Curve")
+	
 	def locupdate_graph1(self,event):
 	     self.loc.set("Graph 1")
 	
@@ -258,6 +265,27 @@ class Processing_Window:
 
 	def infoupdate_reset(self,event):
 	     self.info.set("holder")
-
-
+	     
+	def run_process_batch(self):
+            pd.process_batch(self.process_batchnumber.get(),self.process_batchsize.get())
+	
+	def run_RecCur(self):
+            data = ad.RecCur(self.recur_batchnumber.get(),self.recur_devicenumber.get(),self.recur_pixelnumber.get())
+            self.recur_plot.cla()
+            self.recur_plot.plot(data[0],data[1])
+            self.recur_canvas.show()
+	
+	def recur_next(self):
+            hold = ((self.recur_pixelnumber.get() + 1) % 5)
+            if hold == 0:
+                hold = 1
+            self.recur_pixelnumber.set(hold)  
+            self.run_RecCur()
+	
+	def recur_previous(self):
+            hold = ((self.recur_pixelnumber.get() - 1) % 5)
+            if hold == 0:
+                hold = 4
+            self.recur_pixelnumber.set(hold)
+            self.run_RecCur()
 

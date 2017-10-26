@@ -1,7 +1,8 @@
 # These are the files that need to be imported. 
 
-# import numpy as np
-# import string as st
+import numpy as np
+import string as st
+import os.path as path
 
 def createfile( filename ):
     """
