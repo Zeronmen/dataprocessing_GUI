@@ -1,4 +1,7 @@
-from tkinter import *
+try:
+    from tkinter import *
+except ImportError:
+    from Tkinter import *
 import page_objects as po
 root = Tk()
 
