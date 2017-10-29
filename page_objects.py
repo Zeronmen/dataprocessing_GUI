@@ -181,19 +181,23 @@ class Processing_Window:
 		l.pack(side=LEFT,pady=2,padx=2)
 		e = Entry(graph1_control,width=10,textvariable=self.graph1_batchnumber)
 		e.pack(side=LEFT,pady=2,padx=2)
-		b = Button(graph1_control, text="Graph")
+		l = Label(graph1_control,text="Devicenumber")
+		l.pack(side=LEFT,pady=2,padx=2)
+		e = Entry(graph1_control,width=10,textvariable=self.graph1_devicenumber)
+		e.pack(side=LEFT,pady=2,padx=2)
+		b = Button(graph1_control, text="Graph",command=self.graph1_run)
 		b.bind("<Enter>",self.infoupdate_graph)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.pack(side=LEFT,pady=2,padx=2)
-		b = Button(graph1_control,text="Previous")
+		b = Button(graph1_control,text="Previous",command=self.graph1_previous)
 		b.pack(side=LEFT,pady=2,padx=2)
 		b.bind("<Enter>",self.infoupdate_previous)
 		b.bind("<Leave>",self.infoupdate_reset)
-		b = Button(graph1_control,text="Next")
+		b = Button(graph1_control,text="Next",command=self.graph1_next)
 		b.pack(side=LEFT,pady=2,padx=2)
 		b.bind("<Enter>",self.infoupdate_next)
 		b.bind("<Leave>",self.infoupdate_reset)
-		b = Button(graph1_control,text="Export")
+		b = Button(graph1_control,text="Export",command=self.graph1_export)
 		b.bind("<Enter>",self.infoupdate_export)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.pack(side=LEFT,pady=2,padx=2)
@@ -221,19 +225,23 @@ class Processing_Window:
 		l.pack(side=LEFT,pady=2,padx=2)
 		e = Entry(graph2_control,width=10,textvariable=self.graph2_batchnumber)
 		e.pack(side=LEFT,pady=2,padx=2)
-		b = Button(graph2_control, text="Graph")
+		l = Label(graph2_control,text="Devicenumber")
+		l.pack(side=LEFT,pady=2,padx=2)
+		e = Entry(graph2_control,width=10,textvariable=self.graph2_devicenumber)
+		e.pack(side=LEFT,pady=2,padx=2)
+		b = Button(graph2_control, text="Graph",command=self.graph2_run)
 		b.bind("<Enter>",self.infoupdate_graph)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.pack(side=LEFT,pady=2,padx=2)
-		b = Button(graph2_control,text="Previous")
+		b = Button(graph2_control,text="Previous",command=self.graph2_previous)
 		b.pack(side=LEFT,pady=2,padx=2)
 		b.bind("<Enter>",self.infoupdate_previous)
 		b.bind("<Leave>",self.infoupdate_reset)
-		b = Button(graph2_control,text="Next")
+		b = Button(graph2_control,text="Next",command=self.graph2_next)
 		b.pack(side=LEFT,pady=2,padx=2)
 		b.bind("<Enter>",self.infoupdate_next)
 		b.bind("<Leave>",self.infoupdate_reset)
-		b = Button(graph2_control,text="Export")
+		b = Button(graph2_control,text="Export",command=self.graph2_export)
 		b.bind("<Enter>",self.infoupdate_export)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.pack(side=LEFT,pady=2,padx=2)
@@ -292,7 +300,7 @@ class Processing_Window:
             self.recur_pixelnumber.set(hold)
             self.run_RecCur() 
 
-	def run_graph1(self):
+	def graph1_run(self):
             data = ad.IVdata(self.graph1_batchnumber.get(),self.graph1_devicenumber.get(),self.graph1_pixelnumber.get())
             self.graph1_plot1.cla()
             self.graph1_plot1.plot(data[0],data[1])
@@ -303,16 +311,20 @@ class Processing_Window:
             if hold == 0:
                 hold =1
             self.graph1_pixelnumber.set(hold)
-            self.run_graph1()
+            self.graph1_run()
 
-	def graph1_next(self):
+	def graph1_previous(self):
             hold = ((self.graph1_pixelnumber.get()-1)%5)
             if hold == 0:
                 hold =4
             self.graph1_pixelnumber.set(hold)
-            self.run_graph1()
+            self.graph1_run()
 
-	def run_graph2(self):
+	def graph1_export(self):
+            ad.makeplots(self.graph1_batchnumber.get(),'A')
+            ad.makeplots(self.graph1_batchnumber.get(),'E')
+
+	def graph2_run(self):
             data = ad.IVdata(self.graph2_batchnumber.get(),self.graph2_devicenumber.get(),self.graph2_pixelnumber.get())
             self.graph2_plot1.cla()
             self.graph2_plot1.plot(data[0],data[1])
@@ -323,11 +335,15 @@ class Processing_Window:
 			if hold == 0:
 				hold =1
 			self.graph2_pixelnumber.set(hold)
-			self.run_graph2()
+			self.graph2_run()
 
-	def graph2_next(self):
+	def graph2_previous(self):
             hold = ((self.graph2_pixelnumber.get()-1)%5)
             if hold == 0:
                 hold =4
             self.graph2_pixelnumber.set(hold)
-            self.run_graph2()
+            self.graph2_run()
+
+	def graph2_export(self):
+            ad.makeplots(self.graph2_batchnumber.get(),'A')
+            ad.makeplots(self.graph2_batchnumber.get(),'E')

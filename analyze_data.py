@@ -14,11 +14,12 @@ def RecCur(batchnumber,device,pixel):
         return: Vdata,RRdata
     """
     data = pd.access(batchnumber,device,pixel)
-    datai = data[1][0 : int(data[0][0]/0.025)]
-    dataiin = data[1][::-1][0 : int(data[0][0]/0.025)]
+    stepsize = data[0][0]-data[0][1]
+    datai = data[1][0 : int(data[0][0]/stepsize)]
+    dataiin = data[1][::-1][0 : int(data[0][0]/stepsize)]
     
     RRdata = np.abs(datai/dataiin)
-    Vdata = data[0][0 : int(data[0][0]/0.025)]
+    Vdata = data[0][0 : int(data[0][0]/stepsize)]
     return Vdata,RRdata
 
 # Has method for correctly setting the x and y limits for the whole plots but currently the 4th quad plots
@@ -29,7 +30,7 @@ def IVdata(batchnumber, device, pixel):
         input: batchnumber, devicenumber, pixel
         return: Vdata, Idata
     """
-    data.pd.access(batchnumber,deive,pixel)
+    data=pd.access(batchnumber,device,pixel)
     Idata = data[1]
     Vdata = data[0]
     return Vdata,Idata
@@ -47,7 +48,7 @@ def makeplots(batchnumber,firstdevice):
     start = ord(firstdevice) - 64
 
     data = np.array([
-            [access(batchnumber , i+1 , j+1) for j in range(0,4)]
+            [pd.access(batchnumber , i+1 , j+1) for j in range(0,4)]
             for i in range(start - 1,start + 3)])
 
     fplotx = np.array([data[i][0][0][0] for i in range(0,4)])
