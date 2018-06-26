@@ -7,58 +7,59 @@ except ImportError:
 
 import process_data as pd
 import analyze_data as ad
-import matplotlib
+import matplotlib 
+import matplotlib.pyplot as plt
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 
 class Start_Window:
-    
-    def __init__(self,master):
-        
-        self.master = master
-        self.info = StringVar()
-        self.info.set("holder")
-        
-        self.master.wm_title("Photovoltaic Characteristics")
-        
-        main_frame = Frame(self.master, width=250, height=250)
-        main_frame.pack()
+	
+	def __init__(self,master):
+		
+		self.master = master
+		self.info = StringVar()
+		self.info.set("holder")
+		
+		self.master.wm_title("Photovoltaic Characteristics")
+		
+		main_frame = Frame(self.master, width=250, height=250)
+		main_frame.pack()
 
-        statement_label = Label(main_frame,text='Photovoltaic data processing\n and analysis')
-        statement_label.place(anchor=CENTER,relx=0,rely=0,x=125,y=90)
+		statement_label = Label(main_frame,text='Photovoltaic data processing\n and analysis')
+		statement_label.place(anchor=CENTER,relx=0,rely=0,x=125,y=90)
 
-        infobar = Label(self.master,textvariable=self.info,relief=SUNKEN, anchor=W)
-        infobar.pack(side=BOTTOM,fill=X)
+		infobar = Label(self.master,textvariable=self.info,relief=SUNKEN, anchor=W)
+		infobar.pack(side=BOTTOM,fill=X)
 
-        control_frame = Frame(main_frame)
-        b = Button(control_frame,text='Process Data', width=20,command=self.openwindow_process)
-        b.bind("<Enter>",self.infoupdate_process)
-        b.bind("<Leave>",self.infoupdate_reset)
-        b.grid(row=0)
-        Label(control_frame,width=10).grid(row=1)
-        b = Button(control_frame,text='Analyze Data', width=20)
-        # b = Button(control_frame,text='Analyze Data', width=20, command=self.openwindow_analysis)
-        b.bind("<Enter>",self.infoupdate_analysis)
-        b.bind("<Leave>",self.infoupdate_reset)
-        b.grid(row=2)
+		control_frame = Frame(main_frame)
+		b = Button(control_frame,text='Process Data', width=20,command=self.openwindow_process)
+		b.bind("<Enter>",self.infoupdate_process)
+		b.bind("<Leave>",self.infoupdate_reset)
+		b.grid(row=0)
+		Label(control_frame,width=10).grid(row=1)
+		b = Button(control_frame,text='Analyze Data', width=20)
+		# b = Button(control_frame,text='Analyze Data', width=20, command=self.openwindow_analysis)
+		b.bind("<Enter>",self.infoupdate_analysis)
+		b.bind("<Leave>",self.infoupdate_reset)
+		b.grid(row=2)
 
-        control_frame.place(anchor=CENTER,relx=0,rely=0,x=125,y=150)
+		control_frame.place(anchor=CENTER,relx=0,rely=0,x=125,y=150)
 
-    def openwindow_process(self):
-        process_win = Processing_Window(self.master)
-    
-    # def openwindow_analysis(self):
-        # analysis_win = Analysis_Window(self.master)
+	def openwindow_process(self):
+		process_win = Processing_Window(self.master)
+	
+	# def openwindow_analysis(self):
+		# analysis_win = Analysis_Window(self.master)
    
-    def infoupdate_process(self,event):
-        self.info.set("process")    
-        
-    def infoupdate_analysis(self,event):
-        self.info.set("analysis")
-        
-    def infoupdate_reset(self,event):
-        self.info.set("holder")
+	def infoupdate_process(self,event):
+		self.info.set("process")    
+		
+	def infoupdate_analysis(self,event):
+		self.info.set("analysis")
+		
+	def infoupdate_reset(self,event):
+		self.info.set("holder")
 
 
 class Processing_Window:
@@ -90,6 +91,7 @@ class Processing_Window:
 
 		process_frame = Frame(main_frame,bd=2, relief=SUNKEN)
 		process_frame.grid(column=1,row=1,pady=5,padx=5,sticky=N+S+E+W)
+		process_frame.bind("<Enter>",self.locupdate_process)
 		self.process_batchnumber = IntVar()
 		self.process_batchsize = IntVar()
 		
@@ -102,10 +104,15 @@ class Processing_Window:
 		e = Entry(process_frame,textvariable=self.process_batchsize)
 		e.grid(column=1,row=1, padx=2, pady=2)
 		b = Button(process_frame,text="Run",width=10,
-                    command=self.run_process_batch)
+					command=self.run_process_batch)
 		b.bind("<Enter>",self.infoupdate_runprocess)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.grid(column=1, row=2, padx=2, pady=2,sticky=W)
+		b = Button(process_frame,text="Export IV Curves",
+			command=self.export_graph_process)
+		b.bind("<Enter>",self.infoupdate_export)
+		b.bind("<Leave>",self.infoupdate_reset)
+		b.grid(column=1, row=3, padx=2, pady=2, sticky=W)
 
 		recur_frame = Frame(main_frame,bd=2)
 		recur_frame.bind("<Enter>",self.locupdate_recur)
@@ -248,87 +255,97 @@ class Processing_Window:
 
 		
 	def infoupdate_recurgraph(self,event):
-	     self.info.set("Graphs the Recur graph of selected data")
+		 self.info.set("Graphs the Recur graph of selected data")
 
 	def infoupdate_runprocess(self,event):
-	     self.info.set("Processes selected batch")
+		 self.info.set("Processes selected batch")
+
+	def locupdate_process(self,event):
+		 self.loc.set("batch number %d" % self.process_batchnumber.get())
 
 	def locupdate_recur(self,event):
-            self.loc.set("the Rectification Curve")
+		 self.loc.set("the Rectification Curve")
 	
 	def locupdate_graph1(self,event):
-	     self.loc.set("Graph 1")
+		 self.loc.set("Graph 1")
 	
 	def locupdate_graph2(self,event):
-	     self.loc.set("Graph 2")
+		 self.loc.set("Graph 2")
 
 	def infoupdate_graph(self,event):
-	     self.info.set("graphs selected data on %s" % self.loc.get())
+		 self.info.set("graphs selected data on %s" % self.loc.get())
 
 	def infoupdate_previous(self,event):
-            self.info.set("scrolls to the previous device on %s" % self.loc.get())
-    
+			self.info.set("scrolls to the previous device on %s" % self.loc.get())
+	
 	def infoupdate_next(self,event):
-            self.info.set("scrolls to next device on %s" % self.loc.get())
+			self.info.set("scrolls to next device on %s" % self.loc.get())
 
 	def infoupdate_export(self,event):
-	     self.info.set("Exports %s" % self.loc.get())		
+		 self.info.set("Exports %s" % self.loc.get())		
 
 	def infoupdate_reset(self,event):
-	     self.info.set("holder")
-	     
+		 self.info.set("holder")
+		 
 	def run_process_batch(self):
-            pd.process_batch(self.process_batchnumber.get(),self.process_batchsize.get())
-	
+			pd.process_batch(self.process_batchnumber.get(),self.process_batchsize.get())
+
+	def export_graph_process(self):
+			ad.makeplots(self.process_batchnumber.get(),'A')
+			ad.makeplots(self.process_batchnumber.get(),'E')
+
 	def run_RecCur(self):
-            data = ad.RecCur(self.recur_batchnumber.get(),self.recur_devicenumber.get(),self.recur_pixelnumber.get())
-            self.recur_plot.cla()
-            self.recur_plot.plot(data[0],data[1])
-            self.recur_canvas.show()
+			data = ad.RecCur(self.recur_batchnumber.get(),self.recur_devicenumber.get(),self.recur_pixelnumber.get())
+			self.recur_plot.cla()
+			self.recur_plot.plot(data[0],data[1])
+			self.recur_canvas.show()
 	
 	def recur_next(self):
-            hold = ((self.recur_pixelnumber.get() + 1) % 5)
-            if hold == 0:
-                hold = 1
-            self.recur_pixelnumber.set(hold)  
-            self.run_RecCur()
+			hold = ((self.recur_pixelnumber.get() + 1) % 5)
+			if hold == 0:
+				hold = 1
+			self.recur_pixelnumber.set(hold)  
+			self.run_RecCur()
 	
 	def recur_previous(self):
-            hold = ((self.recur_pixelnumber.get() - 1) % 5)
-            if hold == 0:
-            	hold = 4
-            self.recur_pixelnumber.set(hold)
-            self.run_RecCur() 
+			hold = ((self.recur_pixelnumber.get() - 1) % 5)
+			if hold == 0:
+				hold = 4
+			self.recur_pixelnumber.set(hold)
+			self.run_RecCur() 
 
 	def graph1_run(self):
-            data = ad.IVdata(self.graph1_batchnumber.get(),self.graph1_devicenumber.get(),self.graph1_pixelnumber.get())
-            self.graph1_plot1.cla()
-            self.graph1_plot1.plot(data[0],data[1])
-            self.graph1_canvas.show()
+			data = ad.IVdata(self.graph1_batchnumber.get(),self.graph1_devicenumber.get(),self.graph1_pixelnumber.get())
+			self.graph1_plot1.cla()
+			self.graph1_plot1.plot(data[0],data[1])
+			self.graph1_canvas.show()
 
 	def graph1_next(self):
-            hold = ((self.graph1_pixelnumber.get()+1)%5)
-            if hold == 0:
-                hold =1
-            self.graph1_pixelnumber.set(hold)
-            self.graph1_run()
+			hold = ((self.graph1_pixelnumber.get()+1)%5)
+			if hold == 0:
+				hold =1
+			self.graph1_pixelnumber.set(hold)
+			self.graph1_run()
 
 	def graph1_previous(self):
-            hold = ((self.graph1_pixelnumber.get()-1)%5)
-            if hold == 0:
-                hold =4
-            self.graph1_pixelnumber.set(hold)
-            self.graph1_run()
+			hold = ((self.graph1_pixelnumber.get()-1)%5)
+			if hold == 0:
+				hold =4
+			self.graph1_pixelnumber.set(hold)
+			self.graph1_run()
 
 	def graph1_export(self):
-            ad.makeplots(self.graph1_batchnumber.get(),'A')
-            ad.makeplots(self.graph1_batchnumber.get(),'E')
+			ad.makeplots(self.graph1_batchnumber.get(),'A')
+			ad.makeplots(self.graph1_batchnumber.get(),'E')
 
 	def graph2_run(self):
-            data = ad.IVdata(self.graph2_batchnumber.get(),self.graph2_devicenumber.get(),self.graph2_pixelnumber.get())
-            self.graph2_plot1.cla()
-            self.graph2_plot1.plot(data[0],data[1])
-            self.graph2_canvas.show()
+			data = ad.IVdata(self.graph2_batchnumber.get(),self.graph2_devicenumber.get(),self.graph2_pixelnumber.get())
+			self.graph2_plot1.cla()
+			self.graph2_plot1.plot(data[0],data[1])
+			# plt.xlabel("Voltage (V)")
+			# plt.ylabel("Current (I)")
+			# plt.title("IV Curve for PV %d_%d_P%d" % (self.graph2_batchnumber.get(),self.graph2_devicenumber.get(),self.graph2_pixelnumber.get()))
+			self.graph2_canvas.show()
 
 	def graph2_next(self):
 			hold = ((self.graph2_pixelnumber.get()+1)%5)
@@ -338,12 +355,12 @@ class Processing_Window:
 			self.graph2_run()
 
 	def graph2_previous(self):
-            hold = ((self.graph2_pixelnumber.get()-1)%5)
-            if hold == 0:
-                hold =4
-            self.graph2_pixelnumber.set(hold)
-            self.graph2_run()
+			hold = ((self.graph2_pixelnumber.get()-1)%5)
+			if hold == 0:
+				hold =4
+			self.graph2_pixelnumber.set(hold)
+			self.graph2_run()
 
 	def graph2_export(self):
-            ad.makeplots(self.graph2_batchnumber.get(),'A')
-            ad.makeplots(self.graph2_batchnumber.get(),'E')
+			ad.makeplots(self.graph2_batchnumber.get(),'A')
+			ad.makeplots(self.graph2_batchnumber.get(),'E')
