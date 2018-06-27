@@ -7,6 +7,7 @@ except ImportError:
 
 import process_data as pd
 import analyze_data as ad
+import string as st
 import matplotlib 
 import matplotlib.pyplot as plt
 matplotlib.use("TkAgg")
@@ -19,7 +20,8 @@ class Start_Window:
 		
 		self.master = master
 		self.info = StringVar()
-		self.info.set("holder")
+		self.version = "1.0"
+		self.info.set("Currently running version %s" % self.version)
 		
 		self.master.wm_title("Photovoltaic Characteristics")
 		
@@ -59,7 +61,7 @@ class Start_Window:
 		self.info.set("analysis")
 		
 	def infoupdate_reset(self,event):
-		self.info.set("holder")
+		self.info.set("Currently running version %s" % self.version)
 
 
 class Processing_Window:
@@ -77,6 +79,7 @@ class Processing_Window:
 
 		top = Toplevel()
 		top.title("Processing Menu")
+		top.state("zoomed")
 		top.geometry("%ix%i" % (width,height))
 
 		main_frame = Frame(top)
@@ -118,8 +121,17 @@ class Processing_Window:
 		recur_frame.bind("<Enter>",self.locupdate_recur)
 		recur_frame.grid(column=1,row=0,pady=5,padx=5,sticky=N+S+E+W)
 
+		self.recur_batchnumber = IntVar()
+		self.recur_devicenumber = IntVar()
+		self.recur_devicenumber.set(1)
+		self.recur_pixelnumber = IntVar()
+		self.recur_pixelnumber.set(1)
+
 		recur_fig = Figure(figsize=(490/100,450/100),dpi=100)
 		self.recur_plot = recur_fig.add_subplot(1,1,1)
+		self.recur_plot.set_title("Rectification Curve: PV%d_%c_P%d" % (self.recur_batchnumber.get(),st.ascii_uppercase[self.recur_devicenumber.get()-1],self.recur_pixelnumber.get()))
+		self.recur_plot.set_xlabel("Voltage (V)")
+		self.recur_plot.set_ylabel("Rectification Ratio (unitless)")
 
 		self.recur_canvas = FigureCanvasTkAgg(recur_fig, recur_frame)
 		self.recur_canvas.show()
@@ -129,11 +141,6 @@ class Processing_Window:
 		
 		recur_control = Frame(recur_frame,bd=2,relief=SUNKEN)
 		recur_control.pack(side=TOP,fill=X)
-		self.recur_batchnumber = IntVar()
-		self.recur_devicenumber = IntVar()
-		self.recur_pixelnumber = IntVar()
-		self.recur_pixelnumber.set(1)
-		
 
 		l = Label(recur_control,text="Batchnumber")
 		l.grid(column=0,row=0,sticky=W,pady=1)
@@ -169,14 +176,18 @@ class Processing_Window:
 		graph1_frame.grid(column=0, row=0, pady=5,sticky=N+S+W+E)
 		self.graph1_batchnumber = IntVar()
 		self.graph1_devicenumber = IntVar()
+		self.graph1_devicenumber.set(1)
 		self.graph1_pixelnumber = IntVar()
 		self.graph1_pixelnumber.set(1)
 
 
-		graph1_fig = Figure(figsize=(1055/100,450/100),dpi=100)
-		self.graph1_plot1 = graph1_fig.add_subplot(1,1,1)
+		self.graph1_fig = Figure(figsize=(1055/100,450/100),dpi=100)
+		self.graph1_plot1 = self.graph1_fig.add_subplot(1,1,1)
+		self.graph1_plot1.set_title("IV Curve: PV%d_%c_P%d" % (self.graph1_batchnumber.get(),st.ascii_uppercase[self.graph1_devicenumber.get()-1],self.graph1_pixelnumber.get()))
+		self.graph1_plot1.set_xlabel("Voltage (V)")
+		self.graph1_plot1.set_ylabel("Current (I)")
 
-		self.graph1_canvas = FigureCanvasTkAgg(graph1_fig, graph1_frame)
+		self.graph1_canvas = FigureCanvasTkAgg(self.graph1_fig, graph1_frame)
 		self.graph1_canvas.show()
 		self.graph1_canvas.get_tk_widget().pack(side=TOP,fill=BOTH)
 		self.graph1_canvas._tkcanvas.pack(side=TOP,fill=BOTH)
@@ -214,13 +225,17 @@ class Processing_Window:
 		graph2_frame.grid(column=0,row=1,pady=5,sticky=N+S+E+W)
 		self.graph2_batchnumber = IntVar()
 		self.graph2_devicenumber = IntVar()
+		self.graph2_devicenumber.set(1)
 		self.graph2_pixelnumber = IntVar()
 		self.graph2_pixelnumber.set(1)
 
-		graph2_fig = Figure(figsize=(1055/100,450/100),dpi=100)
-		self.graph2_plot1 = graph2_fig.add_subplot(1,1,1)
+		self.graph2_fig = Figure(figsize=(1055/100,450/100),dpi=100)
+		self.graph2_plot1 = self.graph2_fig.add_subplot(1,1,1)
+		self.graph2_plot1.set_title("IV Curve: PV%d_%c_P%d" % (self.graph2_batchnumber.get(),st.ascii_uppercase[self.graph2_devicenumber.get()-1],self.graph2_pixelnumber.get()))
+		self.graph2_plot1.set_xlabel("Voltage (V)")
+		self.graph2_plot1.set_ylabel("Current (I)")
 
-		self.graph2_canvas = FigureCanvasTkAgg(graph2_fig, graph2_frame)
+		self.graph2_canvas = FigureCanvasTkAgg(self.graph2_fig, graph2_frame)
 		self.graph2_canvas.show()
 		self.graph2_canvas.get_tk_widget().pack(side=TOP,fill=BOTH)
 		self.graph2_canvas._tkcanvas.pack(side=TOP,fill=X)
@@ -252,6 +267,8 @@ class Processing_Window:
 		b.bind("<Enter>",self.infoupdate_export)
 		b.bind("<Leave>",self.infoupdate_reset)
 		b.pack(side=LEFT,pady=2,padx=2)
+
+		self.info.set("Current State: \t Processing batch %d \t Graph 1 showing PV%d_%c_P%d \t Graph 2 showing PV%d_%c_P%d" % (self.process_batchnumber.get(),self.graph1_batchnumber.get(),st.ascii_uppercase[self.graph1_devicenumber.get()-1],self.graph1_pixelnumber.get(),self.graph2_batchnumber.get(),st.ascii_uppercase[self.graph2_devicenumber.get()-1],self.graph2_pixelnumber.get()))
 
 		
 	def infoupdate_recurgraph(self,event):
@@ -285,7 +302,7 @@ class Processing_Window:
 		 self.info.set("Exports %s" % self.loc.get())		
 
 	def infoupdate_reset(self,event):
-		 self.info.set("holder")
+		 self.info.set("Current State: \t Processing batch %d \t Graph 1 showing PV%d_%c_P%d \t Graph 2 showing PV%d_%c_P%d" % (self.process_batchnumber.get(),self.graph1_batchnumber.get(),st.ascii_uppercase[self.graph1_devicenumber.get()-1],self.graph1_pixelnumber.get(),self.graph2_batchnumber.get(),st.ascii_uppercase[self.graph2_devicenumber.get()-1],self.graph2_pixelnumber.get()))
 		 
 	def run_process_batch(self):
 			pd.process_batch(self.process_batchnumber.get(),self.process_batchsize.get())
@@ -295,9 +312,15 @@ class Processing_Window:
 			ad.makeplots(self.process_batchnumber.get(),'E')
 
 	def run_RecCur(self):
-			data = ad.RecCur(self.recur_batchnumber.get(),self.recur_devicenumber.get(),self.recur_pixelnumber.get())
 			self.recur_plot.cla()
-			self.recur_plot.plot(data[0],data[1])
+			self.recur_plot.set_title("Rectification Curve: PV%d_%c_P%d" % (self.recur_batchnumber.get(),st.ascii_uppercase[self.recur_devicenumber.get()-1],self.recur_pixelnumber.get() ) )
+			self.recur_plot.set_xlabel("Voltage (V)")
+			self.recur_plot.set_ylabel("Rectification Ratio (unitless)")
+			try:
+				data = ad.RecCur(self.recur_batchnumber.get(),self.recur_devicenumber.get(),self.recur_pixelnumber.get())
+				self.recur_plot.plot(data[0],data[1])
+			except ValueError:
+				pass
 			self.recur_canvas.show()
 	
 	def recur_next(self):
@@ -318,6 +341,9 @@ class Processing_Window:
 			data = ad.IVdata(self.graph1_batchnumber.get(),self.graph1_devicenumber.get(),self.graph1_pixelnumber.get())
 			self.graph1_plot1.cla()
 			self.graph1_plot1.plot(data[0],data[1])
+			self.graph1_plot1.set_title("IV Curve: PV%d_%c_P%d" % (self.graph1_batchnumber.get(),st.ascii_uppercase[self.graph1_devicenumber.get()-1],self.graph1_pixelnumber.get()))
+			self.graph1_plot1.set_xlabel("Voltage (V)")
+			self.graph1_plot1.set_ylabel("Current (I)")
 			self.graph1_canvas.show()
 
 	def graph1_next(self):
@@ -342,9 +368,9 @@ class Processing_Window:
 			data = ad.IVdata(self.graph2_batchnumber.get(),self.graph2_devicenumber.get(),self.graph2_pixelnumber.get())
 			self.graph2_plot1.cla()
 			self.graph2_plot1.plot(data[0],data[1])
-			# plt.xlabel("Voltage (V)")
-			# plt.ylabel("Current (I)")
-			# plt.title("IV Curve for PV %d_%d_P%d" % (self.graph2_batchnumber.get(),self.graph2_devicenumber.get(),self.graph2_pixelnumber.get()))
+			self.graph2_plot1.set_title("IV Curve: PV%d_%c_P%d" % (self.graph2_batchnumber.get(),st.ascii_uppercase[self.graph2_devicenumber.get()-1],self.graph2_pixelnumber.get()))
+			self.graph2_plot1.set_xlabel("Voltage (V)")
+			self.graph2_plot1.set_ylabel("Current (I)")
 			self.graph2_canvas.show()
 
 	def graph2_next(self):
